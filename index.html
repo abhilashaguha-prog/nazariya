@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Nazariya: clickable prototype of an eyewear and eye-care app.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Nazariya</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+/* Layout: desktop = demo guide beside a phone; phone width = the app fills the screen. Single deliberate light brand look from the Nazariya kit. */
+:root{
+  --indigo:#232B6B; --indigo-2:#313a86; --indigo-soft:#E8E9F3;
+  --marigold:#F4A51C; --marigold-soft:#FDF1D8;
+  --terracotta:#B8502E; --terracotta-soft:#F6E3DA;
+  --chalk:#F7F3EC; --ground:#EDE6D9; --card:#FFFFFF;
+  --kajal:#16161D; --muted:#5E6075; --line:rgba(35,43,107,.13);
+  --ok:#1F7A4D; --ok-soft:#E1F1E8;
+  --display:"Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --hindi:"Tiro Devanagari Hindi", "Noto Sans Devanagari", serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--ground);color:var(--kajal);font-family:var(--body);font-size:14px;line-height:1.45}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--marigold);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.hi{font-family:var(--hindi)}
+
+/* Stage */
+.stage{height:100%;display:flex;gap:48px;align-items:center;justify-content:center;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.guide{width:340px;flex:0 0 340px;display:flex;flex-direction:column;gap:20px;max-height:100%;overflow:auto}
+.guide .brand{display:flex;align-items:center;gap:12px}
+.guide h1{font-size:34px;color:var(--indigo);line-height:1}
+.guide .tag{font-family:var(--display);font-weight:700;font-size:18px;color:var(--indigo)}
+.guide .meta{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.guide h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--terracotta);font-family:var(--body);font-weight:700}
+.flows{display:flex;flex-direction:column;gap:6px}
+.flows button{display:flex;align-items:center;gap:10px;text-align:left;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600;color:var(--indigo)}
+.flows button:hover{border-color:var(--indigo)}
+.flows .n{font-variant-numeric:tabular-nums;width:22px;height:22px;border-radius:50%;background:var(--indigo-soft);display:grid;place-items:center;font-size:12px;flex:none}
+.flows small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.why{display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--kajal)}
+.why b{color:var(--indigo)}
+.reset{align-self:flex-start;font-size:12px;color:var(--muted);text-decoration:underline}
+
+.phone{width:390px;height:min(820px,100%);flex:none;background:var(--kajal);border-radius:46px;padding:10px;box-shadow:0 30px 60px -20px rgba(22,22,29,.45)}
+.app{position:relative;width:100%;height:100%;background:var(--chalk);border-radius:37px;overflow:hidden;display:flex;flex-direction:column}
+@media (max-width:820px){
+  .stage{padding:0;gap:0}
+  .guide{display:none}
+  .phone{width:100%;height:100%;border-radius:0;padding:0;box-shadow:none;background:var(--chalk)}
+  .app{border-radius:0}
+}
+
+/* App chrome */
+.topbar{flex:none;display:flex;align-items:center;gap:10px;padding:16px 16px 10px;background:var(--chalk)}
+.topbar.home{background:var(--indigo);color:#fff;padding-bottom:14px;flex-direction:column;align-items:stretch;gap:12px}
+.topbar .row{display:flex;align-items:center;gap:10px}
+.topbar .wm{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1}
+.topbar .wm small{display:block;font-family:var(--hindi);font-weight:400;font-size:13px;color:var(--marigold);letter-spacing:0;margin-top:2px}
+.city{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;color:#fff}
+.search{display:flex;align-items:center;gap:8px;background:#fff;color:var(--muted);border-radius:12px;padding:10px 12px}
+.search input{border:0;outline:0;font:inherit;flex:1;min-width:0;color:var(--kajal);background:transparent}
+.iconbtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);color:var(--indigo);flex:none}
+.title{font-family:var(--display);font-weight:700;font-size:19px;color:var(--indigo)}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.pad{padding:16px;display:flex;flex-direction:column;gap:20px}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(8px + env(safe-area-inset-bottom,0px))}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted);padding:4px 0;position:relative}
+.tabbar button.on{color:var(--indigo)}
+.tabbar button.on::before{content:"";position:absolute;top:-7px;width:28px;height:3px;border-radius:0 0 3px 3px;background:var(--marigold)}
+.badge{position:absolute;top:0;left:calc(50% + 6px);background:var(--terracotta);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 4px}
+
+/* Bits */
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.sec-h h2{font-size:18px;color:var(--indigo)}
+.link{font-size:13px;font-weight:600;color:var(--terracotta)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:12px;font-weight:700;font-size:15px}
+.btn-p{background:var(--marigold);color:var(--kajal)}
+.btn-p:disabled{background:#e9dfcc;color:#9a917f;cursor:not-allowed}
+.btn-s{background:var(--card);color:var(--indigo);border:1.5px solid var(--indigo)}
+.btn-i{background:var(--indigo);color:#fff}
+.btn-block{width:100%}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:13px;color:var(--indigo)}
+.chip.on{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--line)}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.price{font-weight:700;font-variant-numeric:tabular-nums}
+.mrp{color:var(--muted);text-decoration:line-through;font-size:12px;margin-left:6px;font-weight:400}
+.hscroll{display:flex;gap:12px;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.sample{font-size:11px;color:var(--muted);text-align:center}
+
+/* Home */
+.hero{background:var(--indigo);color:#fff;border-radius:20px;padding:18px;display:grid;grid-template-columns:1fr auto;gap:8px;position:relative;overflow:hidden}
+.hero .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--marigold);font-weight:700}
+.hero h2{font-size:24px;line-height:1.1;margin-top:4px}
+.hero p{font-size:13px;color:#d8daf0;margin-top:6px}
+.hero .btn{margin-top:12px;padding:10px 14px;font-size:14px}
+.tryon-card{display:flex;gap:14px;align-items:center;padding:14px;background:var(--marigold-soft);border:1px solid #f3dca8;border-radius:18px;text-align:left;width:100%}
+.tryon-card .t{font-family:var(--display);font-weight:700;font-size:17px;color:var(--indigo)}
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svc{display:flex;flex-direction:column;gap:8px;text-align:left;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.svc .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
+.svc b{font-size:14px;color:var(--indigo);line-height:1.2}
+.svc span{font-size:12px;color:var(--muted)}
+.remind{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--terracotta-soft);border:1px solid #ecc7b6}
+.remind b{font-family:var(--display);font-size:16px;color:var(--terracotta)}
+.faces{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.face-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;background:var(--card);border:1px solid var(--line);border-radius:14px;font-size:12px;font-weight:600;color:var(--indigo)}
+.edit{border-radius:18px;background:var(--terracotta);color:#fff;padding:16px;display:flex;gap:12px;align-items:center;text-align:left;width:100%}
+.edit h3{font-size:20px}
+.store-row{display:flex;gap:12px;align-items:center;padding:12px 14px}
+.store-row+.store-row{border-top:1px solid var(--line)}
+
+/* Product cards */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcard{display:flex;flex-direction:column;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative}
+.pcard .img{background:var(--chalk);aspect-ratio:4/3;display:grid;place-items:center;padding:12px}
+.pcard .img svg{width:100%;height:auto}
+.pcard .info{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px}
+.pcard .nm{font-weight:600;font-size:13px;line-height:1.25}
+.pcard .tg{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;background:var(--indigo);color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.hscroll .pcard{width:150px;flex:none}
+
+/* Product page */
+.pd-img{background:var(--card);border-radius:20px;border:1px solid var(--line);padding:28px 20px;display:grid;place-items:center}
+.swatches{display:flex;gap:10px}
+.sw{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.sw.on{box-shadow:0 0 0 2px var(--indigo)}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.specs div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 4px}
+.specs b{display:block;font-variant-numeric:tabular-nums;color:var(--indigo)}
+.specs span{font-size:11px;color:var(--muted)}
+.opt{display:flex;gap:12px;align-items:center;padding:12px 14px;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:14px}
+.opt.on{border-color:var(--indigo);background:var(--indigo-soft)}
+.opt .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex:none;display:grid;place-items:center}
+.opt.on .radio{border-color:var(--indigo)}
+.opt.on .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--indigo)}
+.opt .body{flex:1;min-width:0}
+.opt b{display:block;color:var(--kajal)}
+.opt span{font-size:12px;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.sticky-cta{position:sticky;bottom:0;background:linear-gradient(to top,var(--chalk) 75%,rgba(247,243,236,0));padding:16px;display:flex;gap:10px;margin-top:-8px}
+.sticky-cta .btn{flex:1}
+
+/* Try on */
+.tstage{position:relative;width:100%;aspect-ratio:300/380;max-height:52vh;margin:0 auto;border-radius:20px;overflow:hidden;background:var(--indigo-soft);touch-action:none}
+.tstage>svg,.tstage>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ov{position:absolute;transform:translate(-50%,-50%);cursor:grab;touch-action:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.25))}
+.ov svg{width:100%;height:auto;display:block}
+.ov:active{cursor:grabbing}
+.thumbs{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none}
+.thumbs::-webkit-scrollbar{display:none}
+.thumb{flex:none;width:86px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:8px 6px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--muted)}
+.thumb.on{border-color:var(--indigo);color:var(--indigo)}
+.slider{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.slider input{flex:1;accent-color:var(--indigo)}
+.hint{font-size:12px;color:var(--muted);text-align:center}
+
+/* Booking */
+.steps{display:flex;gap:4px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.steps i.on{background:var(--marigold)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{padding:9px;border-radius:9px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--indigo);color:#fff}
+.dates{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+.dates::-webkit-scrollbar{display:none}
+.date{flex:none;width:58px;padding:8px 0;border-radius:14px;background:var(--card);border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px}
+.date b{font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums;color:var(--indigo)}
+.date span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.date.on{background:var(--indigo);border-color:var(--indigo)}
+.date.on b,.date.on span{color:#fff}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot{padding:10px 4px;border-radius:10px;background:var(--card);border:1.5px solid var(--line);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;color:var(--indigo)}
+.slot.on{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.slot:disabled{color:#b6b3ad;background:transparent;border-style:dashed;cursor:not-allowed;text-decoration:line-through}
+.lbl{font-size:12px;font-weight:700;color:var(--terracotta);text-transform:uppercase;letter-spacing:.08em}
+.addr{width:100%;font:inherit;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);resize:none;color:var(--kajal)}
+.note{display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--indigo-soft);font-size:12px;color:var(--indigo)}
+.note.warn{background:var(--terracotta-soft);color:var(--terracotta)}
+.doc{display:flex;gap:12px;align-items:flex-start}
+.avatar{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--display);font-weight:700;color:#fff}
+.sumrow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.sumrow:last-child{border-bottom:0}
+.sumrow span:first-child{color:var(--muted)}
+.sumrow span:last-child{text-align:right;font-weight:600}
+.toggle{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;width:100%}
+.toggle .sw2{width:40px;height:24px;border-radius:12px;background:#cfccc4;position:relative;flex:none;transition:background .2s}
+.toggle .sw2::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on .sw2{background:var(--ok)}
+.toggle.on .sw2::after{transform:translateX(16px)}
+.done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding-top:12px}
+.done .big{width:72px;height:72px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center}
+.done h2{font-size:24px;color:var(--indigo)}
+.bid{font-family:var(--display);font-weight:700;letter-spacing:.06em;background:var(--marigold-soft);color:var(--kajal);padding:4px 10px;border-radius:8px;font-variant-numeric:tabular-nums}
+.bk-item{display:flex;gap:12px;padding:14px;align-items:flex-start}
+.bk-item+.bk-item{border-top:1px solid var(--line)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.pill.off{background:#eee;color:var(--muted)}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px}
+
+/* Cart */
+.cline{display:flex;gap:12px;padding:12px;align-items:center}
+.cline+.cline{border-top:1px solid var(--line)}
+.cline .th{width:76px;flex:none;background:var(--chalk);border-radius:10px;padding:8px}
+.cline .th svg{width:100%;height:auto;display:block}
+
+.toast{position:absolute;left:50%;bottom:84px;transform:translate(-50%,20px);background:var(--kajal);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;max-width:85%;text-align:center;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* Saathi chat + tracking */
+.iconbtn{position:relative}
+.chat{display:flex;flex-direction:column;gap:10px;padding:16px}
+.msg{max-width:86%;padding:10px 12px;border-radius:16px;font-size:14px;line-height:1.45;white-space:pre-line}
+.msg.ai{background:var(--card);border:1px solid var(--line);border-top-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--indigo);color:#fff;border-top-right-radius:4px;align-self:flex-end}
+.msg .when{display:block;font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.msg.me .when{color:#c9cbe6}
+.msg.typing{color:var(--muted);font-style:italic}
+.qr{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:92%}
+.qr button{padding:7px 12px;border-radius:999px;border:1.5px solid var(--indigo);color:var(--indigo);font-weight:600;font-size:13px;background:var(--card)}
+.composer{position:sticky;bottom:0;display:flex;gap:8px;padding:10px 16px 14px;background:var(--chalk);border-top:1px solid var(--line)}
+.composer input{flex:1;min-width:0;font:inherit;padding:11px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--kajal)}
+.composer button{width:44px;height:44px;border-radius:50%;background:var(--marigold);color:var(--kajal);display:grid;place-items:center;flex:none}
+.agent-head{display:flex;gap:10px;align-items:center;padding:12px 16px;background:var(--indigo-soft);font-size:12px;color:var(--indigo)}
+.agent-head b{font-size:14px}
+.saathi{width:38px;height:38px;border-radius:50%;background:var(--indigo);color:var(--marigold);display:grid;place-items:center;flex:none}
+.bellbtn{position:relative;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#fff;flex:none}
+.bellbtn .badge,.iconbtn .badge{left:auto;right:-4px;top:-4px}
+.timeline{display:flex;flex-direction:column;padding:16px}
+.tl{display:flex;gap:12px;position:relative;padding-bottom:18px}
+.tl:last-child{padding-bottom:0}
+.tl::before{content:"";position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--line)}
+.tl:last-child::before{display:none}
+.tl.is-done::before{background:var(--ok)}
+.dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--card);flex:none;display:grid;place-items:center;color:#fff;position:relative;z-index:1}
+.tl.is-done .dot{background:var(--ok);border-color:var(--ok)}
+.tl.is-now .dot{border-color:var(--marigold);background:var(--marigold-soft)}
+.tl b{display:block;line-height:1.3}
+.tl.is-todo b{color:var(--muted);font-weight:500}
+.opt:disabled{opacity:.5;cursor:not-allowed}
+.demo-btn{font-size:12px;font-weight:600;color:var(--muted);border:1px dashed var(--muted);border-radius:10px;padding:8px 12px;align-self:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <aside class="guide" aria-label="Demo guide">
+    <div class="brand">
+      <svg width="52" height="34" viewBox="0 0 52 34" aria-hidden="true"><path d="M3 17C9 7 17 3 26 3s17 4 23 14c-6 10-14 14-23 14S9 27 3 17z" fill="none" stroke="#F4A51C" stroke-width="4" stroke-linejoin="round"/><circle cx="26" cy="17" r="8" fill="none" stroke="#232B6B" stroke-width="4"/><circle cx="26" cy="17" r="3" fill="#232B6B"/></svg>
+      <div><h1>Nazariya</h1><div class="hi" style="color:var(--terracotta);font-size:16px">नज़रिया</div></div>
+    </div>
+    <div class="tag">Nazar bhi, Nazariya bhi.</div>
+    <div class="meta">Clickable prototype · v1 · sample data</div>
+    <h2>Demo flows</h2>
+    <div class="flows">
+      <button data-a="demo" data-v="tryon"><span class="n">1</span><span>Try frames on a face<small>Sample faces or your own photo</small></span></button>
+      <button data-a="demo" data-v="checkup"><span class="n">2</span><span>Book an eye check-up<small>At a store free, or at home</small></span></button>
+      <button data-a="demo" data-v="doctor"><span class="n">3</span><span>See an eye doctor<small>Partner hospital, pick a specialist</small></span></button>
+      <button data-a="demo" data-v="hometry"><span class="n">4</span><span>Frame try-on at home<small>Up to 5 frames brought to you</small></span></button>
+      <button data-a="demo" data-v="visit"><span class="n">5</span><span>Plan a store visit<small>Browse, repair or pick up</small></span></button>
+      <button data-a="demo" data-v="shop"><span class="n">6</span><span>Shop and check out<small>Lenses, offer, store pickup or delivery</small></span></button>
+      <button data-a="demo" data-v="agent"><span class="n">7</span><span>AI follow-ups and order updates<small>Saathi reminds, reschedules, says when specs are ready</small></span></button>
+    </div>
+    <h2>What partners get</h2>
+    <div class="why">
+      <p><b>Hospitals:</b> store check-ups refer straight into booked ophthalmology slots, and yearly reminders bring families back.</p>
+      <p><b>Optical chains:</b> try-on and home try-on turn browsing into store visits and orders, with no-show-proof reminders.</p>
+      <p><b>Fewer no-shows:</b> the Saathi AI assistant confirms, reschedules and follows up on every booking and order.</p>
+      <p><b>Patients:</b> one app for the whole family's eyes, in plain language.</p>
+    </div>
+    <button class="reset" data-a="reset">Reset demo data</button>
+  </aside>
+
+  <div class="phone">
+    <div class="app" id="app">
+      <header class="topbar" id="top"></header>
+      <main class="screen" id="screen"></main>
+      <nav class="tabbar" id="tabs"></nav>
+      <div class="toast" id="toast" role="status"></div>
+      <input type="file" id="selfie" accept="image/*" capture="user" hidden>
+      <input type="file" id="photo" accept="image/*" hidden>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+/* ---------- Icons ---------- */
+const P = {
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  shop:'<circle cx="6.5" cy="14" r="3.5"/><circle cx="17.5" cy="14" r="3.5"/><path d="M10 14h4M3 13l2-6M21 13l-2-6"/>',
+  tryon:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="10.5" r="3"/><path d="M7.5 17.5c1-1.6 2.6-2.3 4.5-2.3s3.5.7 4.5 2.3"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  eye:'<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  doc:'<path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v3a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="12" r="2"/>',
+  hometry:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><circle cx="9.3" cy="15" r="2"/><circle cx="14.7" cy="15" r="2"/><path d="M11.3 15h1.4"/>',
+  store:'<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9h16v1.5a2.7 2.7 0 0 1-5.3 0 2.7 2.7 0 0 1-5.4 0 2.7 2.7 0 0 1-5.3 0z"/><path d="M5 13v8h14v-8"/><path d="M10 21v-4h4v4"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  pin:'<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+  bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+  camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  chev:'<path d="M9 5l7 7-7 7"/>',
+  down:'<path d="M6 9l6 6 6-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+  rx:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>'
+};
+const ic = (n,s=22,sw=1.8) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+const rupee = n => '₹' + n.toLocaleString('en-IN');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- Frames drawn as SVG ---------- */
+const LENS = {
+  round:  'C',
+  rect:   [['M',-34,24],['Q',-34,18,-28,18],['L',28,18],['Q',34,18,34,24],['L',34,56],['Q',34,62,28,62],['L',-28,62],['Q',-34,62,-34,56]],
+  wayfarer:[['M',-36,17],['L',37,17],['L',31,57],['Q',29,62,23,62],['L',-22,62],['Q',-28,62,-30,57]],
+  cateye: [['M',-34,24],['L',37,12],['Q',39,40,22,55],['Q',0,65,-24,57],['Q',-36,50,-34,24]],
+  aviator:[['M',-32,18],['L',34,18],['Q',40,44,20,60],['Q',2,70,-14,60],['Q',-34,46,-32,18]],
+  hex:    [['M',-19,16],['L',19,16],['L',35,40],['L',19,64],['L',-19,64],['L',-35,40]]
+};
+function lensPath(shape, cx, side){
+  if(shape==='round') return `M${cx-29} 40a29 29 0 1 0 58 0a29 29 0 1 0 -58 0Z`;
+  return LENS[shape].map(seg => {
+    const [c, ...n] = seg; const out = [];
+    for(let i=0;i<n.length;i+=2){ out.push((cx + side*n[i]).toFixed(1), n[i+1]); }
+    return c + out.join(' ');
+  }).join(' ') + 'Z';
+}
+function frameSVG(f, color, opts={}){
+  color = color || f.color;
+  const t = f.thick || 5;
+  const tint = f.tint==='sun' ? 'rgba(22,22,29,.78)' : f.tint==='brown' ? 'rgba(92,52,30,.72)' : 'rgba(170,200,235,.18)';
+  const L = lensPath(f.shape,55,-1), R = lensPath(f.shape,145,1);
+  const brow = f.shape==='wayfarer' ? `<path d="M17 19H183" stroke="${color}" stroke-width="${t+3}" stroke-linecap="round"/>` : '';
+  const shine = f.tint ? `<path d="M${f.shape==='round'?36:30} 30q8-6 18-6M${f.shape==='round'?126:120} 30q8-6 18-6" stroke="rgba(255,255,255,.45)" stroke-width="3" stroke-linecap="round" fill="none"/>` : '';
+  const temples = opts.temples===false ? '' : `<path d="M19 26L3 22M181 26L197 22" stroke="${color}" stroke-width="${t}" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    ${temples}
+    <path d="${L}" fill="${tint}" stroke="${color}" stroke-width="${t}" stroke-linejoin="round"/>
+    <path d="${R}" fill="${tint}" stroke="${color}" stroke-width="${t}" stroke-linejoin="round"/>
+    ${brow}
+    <path d="M88 31Q100 21 112 31" stroke="${color}" stroke-width="${t}" fill="none" stroke-linecap="round"/>
+    ${shine}
+  </svg>`;
+}
+
+/* ---------- Sample data ---------- */
+const FRAMES = [
+  {id:'f1', name:'Chai Round', shape:'round', color:'#5a3b26', cat:'eyeglasses', price:1499, mrp:2499, face:['square','heart'], tag:'Bestseller', mat:'Acetate', size:[49,20,145]},
+  {id:'f2', name:'Coder Rectangle', shape:'rect', color:'#16161D', cat:'computer', price:1299, mrp:1999, face:['round','oval'], tag:'Blue-cut', mat:'TR90', size:[52,18,140]},
+  {id:'f3', name:'Jaipur Cat-eye', shape:'cateye', color:'#B8502E', cat:'eyeglasses', price:1899, mrp:2799, face:['round','oval','heart'], tag:'New', mat:'Acetate', size:[51,17,140]},
+  {id:'f4', name:'Marine Drive Aviator', shape:'aviator', color:'#b8933a', cat:'sunglasses', tint:'sun', thick:3.5, price:2499, mrp:3499, face:['square','heart','oval'], tag:'UV400', mat:'Steel', size:[57,15,140]},
+  {id:'f5', name:'Ghat Wayfarer', shape:'wayfarer', color:'#16161D', cat:'sunglasses', tint:'sun', price:1999, mrp:2999, face:['round','oval'], tag:'Polarised', mat:'Acetate', size:[52,20,145]},
+  {id:'f6', name:'Mehfil Hex', shape:'hex', color:'#8d8d97', cat:'eyeglasses', thick:3.5, price:2199, mrp:2999, face:['square','oval'], mat:'Titanium', size:[50,19,145]},
+  {id:'f7', name:'Library Round', shape:'round', color:'#c49a3c', cat:'eyeglasses', thick:3, price:1799, mrp:2499, face:['square','oval'], mat:'Steel', size:[48,21,145]},
+  {id:'f8', name:'Neel Wayfarer', shape:'wayfarer', color:'#232B6B', cat:'computer', price:1599, mrp:2299, face:['round','oval'], tag:'Blue-cut', mat:'TR90', size:[51,19,145]},
+  {id:'f9', name:'Tiffin Round Kids', shape:'round', color:'#2f8f6a', cat:'kids', price:999, mrp:1499, face:['oval','square'], tag:'Bendable', mat:'Silicone', size:[44,16,125]},
+  {id:'f10', name:'Recess Rectangle Kids', shape:'rect', color:'#d24d6b', cat:'kids', price:999, mrp:1499, face:['round','oval'], tag:'Bendable', mat:'Silicone', size:[45,15,125]},
+  {id:'f11', name:'Dhoop Cat-eye', shape:'cateye', color:'#5a2e1c', cat:'sunglasses', tint:'brown', price:2299, mrp:3199, face:['round','oval','heart'], tag:'Dhoop Edit', mat:'Acetate', size:[53,17,140]},
+  {id:'f12', name:'Pathshala Reader', shape:'rect', color:'#6b4a2b', cat:'reading', thick:4, price:799, mrp:1199, face:['round','oval','square'], tag:'+1.0 to +3.0', mat:'TR90', size:[50,18,140]}
+];
+const ALT = ['#16161D','#232B6B','#B8502E','#b8933a','#8d8d97','#2f8f6a'];
+FRAMES.forEach(f => { f.colors = [f.color, ...ALT.filter(c=>c!==f.color).slice(f.id.length%3, f.id.length%3+2)]; });
+const byId = id => FRAMES.find(f=>f.id===id);
+const CATS = [['all','All'],['eyeglasses','Eyeglasses'],['sunglasses','Sunglasses'],['computer','Computer'],['kids','Kids'],['reading','Reading']];
+const FACES = [['oval','Oval'],['round','Round'],['square','Square'],['heart','Heart']];
+const LENSES = [
+  {id:'none', name:'Frame only', d:'Add lenses later at any store', p:0},
+  {id:'sv', name:'Single vision', d:'Clear lenses for distance or reading', p:500},
+  {id:'blue', name:'Blue-cut screen lens', d:'For long phone and laptop hours', p:900},
+  {id:'prog', name:'Progressive', d:'Near and far in one lens, for 40+', p:2500},
+  {id:'psun', name:'Power sunglasses', d:'Your prescription in tinted lenses', p:1200}
+];
+const STORES = [
+  {id:'s1', name:'Nazariya Indiranagar', area:'100 Feet Road, Bengaluru', dist:'2.1 km', hours:'10 am to 9 pm'},
+  {id:'s2', name:'Nazariya Koramangala', area:'80 Feet Road, 4th Block', dist:'4.5 km', hours:'10 am to 9 pm'},
+  {id:'s3', name:'Nazariya Jayanagar', area:'11th Main, 4th Block', dist:'7.8 km', hours:'11 am to 8 pm'}
+];
+const CLINICS = [
+  {id:'c1', name:'Saaf Nazar Eye Centre', area:'HSR Layout · 3.4 km', docs:[
+    {id:'d1', name:'Dr. Meera Iyer', spec:'Cataract and cornea', yrs:14, fee:600, lang:'English, Kannada, Hindi', next:0, color:'#232B6B'},
+    {id:'d2', name:'Dr. Arjun Rao', spec:'Children’s eyes and squint', yrs:9, fee:500, lang:'English, Telugu, Hindi', next:1, color:'#B8502E'}]},
+  {id:'c2', name:'Prakash Netralaya', area:'Jayanagar · 6.2 km', docs:[
+    {id:'d3', name:'Dr. Sana Qureshi', spec:'Retina and diabetic eye care', yrs:11, fee:700, lang:'English, Hindi, Urdu', next:0, color:'#1F7A4D'},
+    {id:'d4', name:'Dr. Vikram Shetty', spec:'Glaucoma', yrs:18, fee:800, lang:'English, Kannada', next:2, color:'#5a3b26'}]}
+];
+const allDocs = () => CLINICS.flatMap(c => c.docs.map(d => ({...d, clinic:c})));
+const MEMBERS = [
+  {id:'me', name:'Me', meta:'Self'},
+  {id:'maa', name:'Maa', meta:'58 yrs · reading glasses'},
+  {id:'papa', name:'Papa', meta:'62 yrs · diabetic, yearly retina check'},
+  {id:'riya', name:'Riya', meta:'8 yrs · first eye test'}
+];
+const REASONS = ['Blurry or changing vision','Red, itchy or watery eyes','Diabetes eye check','Cataract consultation','Child’s eye check or squint','Glaucoma follow-up','Headaches after screen time','Something else'];
+const PURPOSES = [
+  {id:'browse', name:'Browse and try frames', d:'A stylist keeps 30 minutes for you'},
+  {id:'repair', name:'Adjust or repair my glasses', d:'Loose screws, nose pads, alignment. Free.'},
+  {id:'collect', name:'Collect my order', d:'Fitting check before you take it home'},
+  {id:'lens', name:'Change lenses in my frame', d:'Bring your old pair and prescription'}
+];
+const SERVICES = {
+  checkup:{title:'Eye check-up', hi:'आँखों की जाँच', sub:'Free at store · ₹99 at home', icon:'eye', bg:'var(--marigold-soft)', fg:'var(--terracotta)', steps:['who','where','when','review']},
+  doctor:{title:'Doctor appointment', hi:'डॉक्टर से मिलें', sub:'Eye specialists at partner hospitals', icon:'doc', bg:'var(--indigo-soft)', fg:'var(--indigo)', steps:['who','reason','doctor','when','review']},
+  hometry:{title:'Frame try-on at home', hi:'घर पर ट्राय करें', sub:'Up to 5 frames, free visit', icon:'hometry', bg:'var(--terracotta-soft)', fg:'var(--terracotta)', steps:['frames','where','when','review']},
+  visit:{title:'Store visit', hi:'स्टोर आइए', sub:'Browse, repair or pick up', icon:'store', bg:'var(--ok-soft)', fg:'var(--ok)', steps:['purpose','where','when','review']}
+};
+const STEP_TITLES = {who:'Who is this for?', where:'Where should we meet?', when:'Pick a date and time', review:'Check and confirm', reason:'What is bothering you?', doctor:'Choose your doctor', frames:'Pick up to 5 frames', purpose:'What is the visit for?'};
+const CITIES = ['Bengaluru','Mumbai','Delhi NCR','Pune','Lucknow','Indore'];
+const DEFAULT_ADDR = 'Flat 3B, Lake View Apartments, 27th Main, HSR Layout, Bengaluru 560102';
+
+/* Faces for try-on (eyes always at 115,170 and 185,170) */
+const MODELS = [
+  {id:'oval', name:'Ananya', shape:'Oval', skin:'#C68E62', hair:'#1d1512', bg:'#E8E9F3'},
+  {id:'round', name:'Kabir', shape:'Round', skin:'#8D5A3B', hair:'#16110e', bg:'#FDF1D8'},
+  {id:'square', name:'Farah', shape:'Square', skin:'#E0AC83', hair:'#3a2418', bg:'#F6E3DA'}
+];
+function faceSVG(m){
+  const dark = shade(m.skin,-18);
+  let face, hair, extra='';
+  if(m.id==='oval'){ face='<ellipse cx="150" cy="185" rx="76" ry="98"/>'; hair=`<path d="M70 190C60 90 110 62 152 62s92 30 82 128c-6-40-30-74-84-78-50 4-74 30-80 78z" fill="${m.hair}"/><path d="M70 180c-8 60 0 140-10 190h40c-10-60-8-120-6-170z M230 180c8 60 0 140 10 190h-40c10-60 8-120 6-170z" fill="${m.hair}"/>`; }
+  else if(m.id==='round'){ face='<ellipse cx="150" cy="188" rx="88" ry="92"/>'; hair=`<path d="M64 172c-4-70 40-104 88-104s92 30 86 104c-12-36-36-58-86-60-52 2-76 22-88 60z" fill="${m.hair}"/>`; extra=`<path d="M112 248q38 22 76 0" stroke="${m.hair}" stroke-width="6" fill="none" stroke-linecap="round" opacity=".55"/>`; }
+  else { face='<path d="M76 140q0-56 74-60 74 4 74 60v70q0 50-40 68-34 14-68 0-40-18-40-68z"/>'; hair=`<path d="M70 150c-6-66 34-92 82-92 54 0 92 30 82 98-10-34-40-58-82-58-46 0-70 20-82 52z" fill="${m.hair}"/><path d="M66 150c-14 70-6 160-16 220h46c-8-70-12-140-8-200z M234 150c14 70 6 160 16 220h-46c8-70 12-140 8-200z" fill="${m.hair}"/>`; }
+  return `<svg viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg" aria-label="Sample face: ${m.shape}">
+    <rect width="300" height="380" fill="${m.bg}"/>
+    <path d="M40 380c8-60 50-90 110-90s102 30 110 90z" fill="${m.id==='round'?'#232B6B':m.id==='oval'?'#B8502E':'#2f8f6a'}"/>
+    <rect x="128" y="250" width="44" height="50" rx="10" fill="${dark}"/>
+    <ellipse cx="72" cy="180" rx="12" ry="20" fill="${dark}"/><ellipse cx="228" cy="180" rx="12" ry="20" fill="${dark}"/>
+    <g fill="${m.skin}">${face}</g>
+    ${hair}
+    <path d="M97 148q18-10 36 0M167 148q18-10 36 0" stroke="${m.hair}" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="115" cy="170" rx="9" ry="6" fill="#fff"/><ellipse cx="185" cy="170" rx="9" ry="6" fill="#fff"/>
+    <circle cx="115" cy="170" r="4.6" fill="#2a1a12"/><circle cx="185" cy="170" r="4.6" fill="#2a1a12"/>
+    <path d="M150 180v26q-6 6-12 4" stroke="${dark}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M128 232q22 14 44 0" stroke="#8a3b2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    ${extra}
+  </svg>`;
+}
+function shade(hex, pct){ const n=parseInt(hex.slice(1),16); let r=n>>16,g=(n>>8)&255,b=n&255; const f=v=>Math.max(0,Math.min(255,Math.round(v*(1+pct/100)))); return '#'+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,'0')).join(''); }
+function faceIcon(shape){
+  const d = {oval:'<ellipse cx="16" cy="17" rx="10" ry="13"/>', round:'<circle cx="16" cy="17" r="12"/>', square:'<path d="M5 9q0-5 11-5t11 5v12q0 7-11 7T5 21z"/>', heart:'<path d="M4 9q0-5 12-5t12 5q0 9-12 19Q4 18 4 9z"/>'}[shape];
+  return `<svg width="32" height="34" viewBox="0 0 32 34" fill="none" stroke="currentColor" stroke-width="1.8">${d}</svg>`;
+}
+
+/* ---------- Dates and slots ---------- */
+const DAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const SLOTS = ['10:00 am','10:30 am','11:30 am','12:00 pm','2:00 pm','3:30 pm','4:00 pm','5:30 pm','6:30 pm'];
+function days(){ const out=[]; const t=new Date(); t.setHours(0,0,0,0); for(let i=1;i<=10;i++){ const d=new Date(t); d.setDate(t.getDate()+i); out.push(d);} return out; }
+const fmtDate = d => `${DAY[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`;
+const slotTaken = (di, si) => ((di*3 + si*5) % 7) < 2;
+
+/* ---------- State ---------- */
+const KEY='nazariya-demo-v1';
+const S = {screen:'home', hist:[], cat:'all', face:null, q:'', pid:'f1', color:null, lens:'sv',
+  tf:'f3', model:'oval', photo:null, ov:{x:50,y:44.7,w:52},
+  cart:[], bookings:[], bk:null, city:'Bengaluru', co:{rx:'upload', del:'home', store:'s1', pay:'upi'}, order:null, lastBk:null, offerUsed:false, msgs:[], orders:[], unread:0, trackId:null};
+try{ const saved=JSON.parse(localStorage.getItem(KEY)||'null'); if(saved){ S.cart=saved.cart||[]; S.bookings=(saved.bookings||[]).map(b=>({...b, date:new Date(b.date)})); S.city=saved.city||S.city; S.msgs=saved.msgs||[]; S.unread=saved.unread||0; S.orders=(saved.orders||[]).map(o=>({...o, placed:new Date(o.placed), eta:new Date(o.eta)})); } }catch(e){}
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify({cart:S.cart, bookings:S.bookings, city:S.city, msgs:S.msgs.slice(-80), orders:S.orders, unread:S.unread})); }catch(e){} };
+
+const $ = s => document.querySelector(s);
+const TABS = [['home','Home','home'],['shop','Shop','shop'],['tryon','Try on','tryon'],['book','Book','cal'],['cart','Cart','bag']];
+const TAB_OF = {home:'home',shop:'shop',product:'shop',tryon:'tryon',book:'book',flow:'book',bkdone:'book',cart:'cart',checkout:'cart',ordered:'cart',inbox:'home',track:'cart'};
+
+function go(screen, push=true){ if(push && S.screen!==screen) S.hist.push(S.screen); S.screen=screen; render(true); }
+function tab(screen){ S.hist=[]; S.screen=screen; render(true); }
+function back(){
+  if(S.screen==='flow' && S.bk && S.bk.i>0){ S.bk.i--; render(true); return; }
+  S.screen = S.hist.pop() || 'home'; render(true);
+}
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ---------- Top bar & tabs ---------- */
+const TITLES = {shop:'Shop frames', product:'', tryon:'Try on', book:'Book a visit', cart:'Your cart', checkout:'Checkout', ordered:'Order placed', bkdone:'Booked', inbox:'Saathi', track:'Track order'};
+function renderTop(){
+  const top=$('#top');
+  if(S.screen==='home'){
+    top.className='topbar home';
+    top.innerHTML=`<div class="row">
+      <svg width="40" height="26" viewBox="0 0 52 34" aria-hidden="true"><path d="M3 17C9 7 17 3 26 3s17 4 23 14c-6 10-14 14-23 14S9 27 3 17z" fill="none" stroke="#F4A51C" stroke-width="4" stroke-linejoin="round"/><circle cx="26" cy="17" r="8" fill="none" stroke="#fff" stroke-width="4"/><circle cx="26" cy="17" r="3" fill="#fff"/></svg>
+      <div class="wm">Nazariya<small>नज़रिया</small></div>
+      <button class="city" data-a="city">${ic('pin',15)}${esc(S.city)}${ic('down',14)}</button><button class="bellbtn" data-a="go" data-v="inbox" aria-label="Messages from Saathi">${ic('bell',19)}${S.unread?`<span class="badge">${S.unread}</span>`:''}</button></div>
+      <label class="search">${ic('search',18)}<input id="hq" placeholder="Search frames, sunglasses, check-ups" autocomplete="off"></label>`;
+    return;
+  }
+  top.className='topbar';
+  const isTab = ['shop','tryon','book','cart'].includes(S.screen) && !S.hist.length;
+  let title = TITLES[S.screen] ?? '';
+  if(S.screen==='product') title = byId(S.pid).name;
+  if(S.screen==='flow') title = SERVICES[S.bk.svc].title;
+  top.innerHTML = `${isTab?'':`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',20)}</button>`}<div class="title">${esc(title)}</div>${S.screen==='inbox'?'':`<button class="iconbtn" style="margin-left:auto" data-a="go" data-v="inbox" aria-label="Messages from Saathi">${ic('bell',18)}${S.unread?`<span class="badge">${S.unread}</span>`:''}</button>`}`;
+}
+function renderTabs(){
+  const on = TAB_OF[S.screen];
+  const n = S.cart.length;
+  $('#tabs').innerHTML = TABS.map(([id,l,i]) => `<button class="${on===id?'on':''}" data-a="tab" data-v="${id}">${ic(i,22)}${l}${id==='cart'&&n?`<span class="badge">${n}</span>`:''}</button>`).join('');
+}
+
+/* ---------- Screens ---------- */
+function pcard(f){
+  return `<button class="pcard" data-a="product" data-v="${f.id}">
+    ${f.tag?`<span class="tg">${esc(f.tag)}</span>`:''}
+    <div class="img">${frameSVG(f)}</div>
+    <div class="info"><span class="nm">${esc(f.name)}</span><span><span class="price">${rupee(f.price)}</span><span class="mrp">${rupee(f.mrp)}</span></span></div>
+  </button>`;
+}
+function svcCard(k){ const s=SERVICES[k]; return `<button class="svc" data-a="startbk" data-v="${k}"><span class="ic" style="background:${s.bg};color:${s.fg}">${ic(s.icon,22)}</span><b>${s.title}</b><span>${s.sub}</span></button>`; }
+
+const SCREENS = {
+home(){
+  const hasCheckup = S.bookings.some(b=>b.svc==='checkup' && b.status==='upcoming');
+  return `<div class="pad">
+    <div class="hero">
+      <div><div class="eyebrow">Nazar Utaar offer</div><h2>Free eye check-up + 50% off your first frame</h2><p>Sample launch offer. Valid at all stores and at home.</p>
+      <button class="btn btn-p" data-a="startbk" data-v="checkup">Book free check-up</button></div>
+      <svg width="64" height="110" viewBox="0 0 64 110" aria-hidden="true"><path d="M32 0v22" stroke="#d8daf0" stroke-width="2"/><ellipse cx="32" cy="36" rx="16" ry="13" fill="#F4E04D"/><path d="M32 49v8" stroke="#d8daf0" stroke-width="2"/><path d="M26 58c-6 16 2 30 6 40 4-10 12-24 6-40z" fill="#2f8f6a"/><path d="M22 66c-4 12 0 22 4 30 2-8 6-18 2-30z M42 66c4 12 0 22-4 30-2-8-6-18-2-30z" fill="#3aa577"/></svg>
+    </div>
+    <button class="tryon-card" data-a="tab" data-v="tryon">
+      <span style="width:84px;flex:none">${frameSVG(byId('f3'))}</span>
+      <span style="flex:1"><span class="t">Try frames on your face</span><br><span class="small muted">Use a selfie or a sample face. Drag to fit.</span></span>${ic('chev',20)}
+    </button>
+    <div class="sec"><div class="sec-h"><h2>Book in a few taps</h2><button class="link" data-a="tab" data-v="book">My bookings</button></div>
+      <div class="svc-grid">${Object.keys(SERVICES).map(svcCard).join('')}</div></div>
+    ${hasCheckup?'':`<div class="remind"><span style="color:var(--terracotta)">${ic('bell',24)}</span><div style="flex:1;display:flex;flex-direction:column;gap:6px"><b>Last eye test kab hua tha?</b><span class="small">Most adults should get their eyes tested every 1 to 2 years, and kids every year. It takes 20 minutes.</span><button class="link" style="align-self:flex-start" data-a="startbk" data-v="checkup">Book a check-up for the family →</button></div></div>`}
+    <div class="sec"><div class="sec-h"><h2>Chehra dekho, frame chuno</h2></div><p class="small muted">Shop by face shape</p>
+      <div class="faces">${FACES.map(([k,l])=>`<button class="face-btn" data-a="faceshop" data-v="${k}">${faceIcon(k)}${l}</button>`).join('')}</div></div>
+    <div class="sec"><div class="sec-h"><h2>Bestsellers</h2><button class="link" data-a="tab" data-v="shop">See all</button></div>
+      <div class="hscroll">${['f1','f3','f2','f6','f7'].map(id=>pcard(byId(id))).join('')}</div></div>
+    <button class="edit" data-a="catshop" data-v="sunglasses"><div style="flex:1"><div class="small" style="opacity:.8;text-transform:uppercase;letter-spacing:.1em;font-weight:700">New drop</div><h3>Dhoop Chashma Edit</h3><span class="small" style="opacity:.9">Sunglasses with UV400 and polarised lenses</span></div><span style="width:110px;flex:none">${frameSVG(byId('f4'))}</span></button>
+    <div class="sec"><div class="sec-h"><h2>Stores near you</h2></div>
+      <div class="card">${STORES.slice(0,2).map(s=>`<div class="store-row"><span style="color:var(--indigo)">${ic('store',22)}</span><div style="flex:1;min-width:0"><b>${s.name}</b><div class="small muted">${s.area} · ${s.dist} · ${s.hours}</div></div><button class="link" data-a="startbk" data-v="visit">Visit</button></div>`).join('')}</div></div>
+    <p class="sample">Prototype · products, prices, stores and doctors are sample data</p>
+  </div>`;
+},
+shop(){
+  return `<div class="pad">
+    <label class="search" style="border:1px solid var(--line)">${ic('search',18)}<input id="q" placeholder="Search by name or style" value="${esc(S.q)}" autocomplete="off"></label>
+    <div class="chips">${CATS.map(([k,l])=>`<button class="chip ${S.cat===k?'on':''}" data-a="cat" data-v="${k}">${l}</button>`).join('')}</div>
+    <div class="sec"><span class="lbl">Suits my face shape</span>
+    <div class="chips">${FACES.map(([k,l])=>`<button class="chip ${S.face===k?'on':''}" data-a="face" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <div id="grid"></div>
+  </div>`;
+},
+product(){
+  const f=byId(S.pid); const col=S.color||f.color;
+  return `<div class="pad" style="padding-bottom:0">
+    <div class="pd-img">${frameSVG(f,col)}</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <div><h2 style="font-size:22px;color:var(--indigo)">${esc(f.name)}</h2><div class="small muted">${f.mat} · ${CATS.find(c=>c[0]===f.cat)[1]}</div></div>
+      <div style="text-align:right"><div class="price" style="font-size:20px">${rupee(f.price)}</div><div class="mrp">${rupee(f.mrp)}</div></div>
+    </div>
+    <div class="swatches">${f.colors.map(c=>`<button class="sw ${c===col?'on':''}" style="background:${c}" data-a="color" data-v="${c}" aria-label="Colour"></button>`).join('')}</div>
+    <div class="note">${ic('info',18)}<span>Suits <b>${f.face.map(x=>x[0].toUpperCase()+x.slice(1)).join(', ')}</b> faces. Not sure of yours? Try it on.</span></div>
+    <div class="sec"><span class="lbl">Size in mm</span><div class="specs">
+      <div><b>${f.size[0]}</b><span>Lens</span></div><div><b>${f.size[1]}</b><span>Bridge</span></div><div><b>${f.size[2]}</b><span>Temple</span></div><div><b>${f.size[0]*2+f.size[1]+6}</b><span>Frame</span></div></div></div>
+    <div class="sec"><span class="lbl">Choose lenses</span><div class="stack">${(f.tint?[LENSES[0],LENSES[4]]:LENSES.slice(0,4)).map(l=>`<button class="opt ${S.lens===l.id?'on':''}" data-a="lens" data-v="${l.id}"><span class="radio"></span><span class="body"><b>${l.name}</b><span>${l.d}</span></span><span class="price">${l.p?'+'+rupee(l.p):'Free'}</span></button>`).join('')}</div></div>
+    <button class="link" style="align-self:flex-start" data-a="hometry-add">${ic('hometry',16)} Add to a free home try-on</button>
+  </div>
+  <div class="sticky-cta"><button class="btn btn-s" data-a="tryfrom" data-v="${f.id}">${ic('tryon',18)}Try on</button><button class="btn btn-p" data-a="addcart">Add to cart</button></div>`;
+},
+tryon(){
+  const f=byId(S.tf);
+  const m=MODELS.find(x=>x.id===S.model);
+  return `<div class="pad">
+    <div class="tstage" id="tstage">
+      ${S.model==='photo'&&S.photo?`<img src="${S.photo}" alt="Your photo">`:faceSVG(m||MODELS[0])}
+      <div class="ov" id="ov" style="left:${S.ov.x}%;top:${S.ov.y}%;width:${S.ov.w}%">${frameSVG(f,null,{})}</div>
+    </div>
+    <div class="chips">
+      ${MODELS.map(x=>`<button class="chip ${S.model===x.id?'on':''}" data-a="model" data-v="${x.id}">${x.name} · ${x.shape}</button>`).join('')}
+      ${S.photo?`<button class="chip ${S.model==='photo'?'on':''}" data-a="model" data-v="photo">Your photo</button>`:''}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-i" data-a="selfie">${ic('camera',18)}Take a selfie</button>
+      <button class="btn btn-s" data-a="upload">${ic('upload',18)}Upload photo</button>
+    </div>
+    <p class="hint">Drag the frame to line it up with the eyes. Your photo stays on this device.</p>
+    <label class="slider" for="sz">Size<input type="range" id="sz" min="30" max="80" value="${S.ov.w}"></label>
+    <div class="thumbs">${FRAMES.map(x=>`<button class="thumb ${x.id===S.tf?'on':''}" data-a="tf" data-v="${x.id}">${frameSVG(x,null,{temples:false})}${esc(x.name.split(' ')[0])}</button>`).join('')}</div>
+    <div class="card" style="padding:14px;display:flex;gap:12px;align-items:center">
+      <div style="flex:1;min-width:0"><b>${esc(f.name)}</b><div class="small muted">Suits ${f.face.join(', ')} faces</div><div class="price">${rupee(f.price)}<span class="mrp">${rupee(f.mrp)}</span></div></div>
+      <button class="btn btn-s" style="padding:10px 12px" data-a="product" data-v="${f.id}">Details</button>
+      <button class="btn btn-p" style="padding:10px 12px" data-a="quickadd" data-v="${f.id}">Add</button>
+    </div>
+  </div>`;
+},
+book(){
+  const up = S.bookings.filter(b=>b.status==='upcoming').sort((a,b)=>a.date-b.date);
+  const past = S.bookings.filter(b=>b.status!=='upcoming');
+  return `<div class="pad">
+    <div class="svc-grid">${Object.keys(SERVICES).map(svcCard).join('')}</div>
+    <div class="sec"><div class="sec-h"><h2>Your bookings</h2></div>
+    ${up.length||past.length?`<div class="card">${[...up,...past].map(b=>bkItem(b)).join('')}</div>`:`<div class="card empty">${ic('cal',30)}<span>No bookings yet. Your check-ups, doctor visits and try-ons will show here with reminders.</span></div>`}</div>
+    <div class="note">${ic('bell',18)}<span>We send a WhatsApp reminder a day before, and nudge you when the family's next check-up is due.</span></div>
+  </div>`;
+},
+flow(){
+  const b=S.bk, svc=SERVICES[b.svc], step=svc.steps[b.i];
+  const ok = stepOk();
+  return `<div class="pad">
+    <div class="steps">${svc.steps.map((_,i)=>`<i class="${i<=b.i?'on':''}"></i>`).join('')}</div>
+    <div><div class="small muted">Step ${b.i+1} of ${svc.steps.length} · <span class="hi">${svc.hi}</span></div><h2 style="font-size:22px;color:var(--indigo);margin-top:2px">${STEP_TITLES[step]}</h2></div>
+    ${STEPS[step]()}
+  </div>
+  <div class="sticky-cta"><button class="btn btn-p btn-block" data-a="${step==='review'?'confirm':'next'}" ${ok?'':'disabled'}>${step==='review'?'Confirm booking':'Continue'}</button></div>`;
+},
+bkdone(){
+  const b=S.lastBk; const svc=SERVICES[b.svc];
+  const extra = {checkup:'After your check-up, the prescription is saved to the profile so you can order lenses in one tap.',
+    doctor:`With your consent, any Nazariya check-up results are shared with ${b.doctorName} before the visit.`,
+    hometry:'Your stylist brings the frames, a PD ruler and lens samples. No charge if you don’t buy.',
+    visit:'Show this booking ID at the counter and you’ll be seen first.'}[b.svc];
+  return `<div class="pad"><div class="done">
+    <div class="big">${ic('check',40,2.4)}</div>
+    <h2>You're booked</h2>
+    <p class="muted">${svc.title} on <b style="color:var(--kajal)">${fmtDate(b.date)}, ${b.slot}</b></p>
+    <span class="bid">${b.id}</span></div>
+    <div class="card" style="padding:4px 16px">${summaryRows(b)}</div>
+    <div class="note">${ic('info',18)}<span>${extra}</span></div>
+    <button class="btn btn-i btn-block" data-a="tab" data-v="book">View my bookings</button>
+    <button class="btn btn-s btn-block" data-a="tab" data-v="home">Back to home</button>
+  </div>`;
+},
+cart(){
+  if(!S.cart.length) return `<div class="pad">${ordersBlock()}<div class="card empty">${ic('bag',30)}<span>Your cart is empty. Find a frame you love, or try some on first.</span><button class="btn btn-p" data-a="tab" data-v="shop">Shop frames</button></div></div>`;
+  const t=totals();
+  return `<div class="pad" style="padding-bottom:0">${ordersBlock()}
+    <div class="card">${S.cart.map((c,i)=>{const f=byId(c.fid); const l=LENSES.find(x=>x.id===c.lens)||LENSES[0];
+      return `<div class="cline"><div class="th">${frameSVG(f,c.color)}</div><div style="flex:1;min-width:0"><b>${esc(f.name)}</b><div class="small muted">${l.name}${l.p?' · +'+rupee(l.p):''}</div><div class="price">${rupee(f.price+l.p)}</div></div><button class="iconbtn" data-a="rm" data-v="${i}" aria-label="Remove">${ic('x',16)}</button></div>`;}).join('')}</div>
+    <div class="card" style="padding:4px 16px">
+      <div class="sumrow"><span>Frames</span><span>${rupee(t.frames)}</span></div>
+      <div class="sumrow"><span>Lenses</span><span>${rupee(t.lenses)}</span></div>
+      <div class="sumrow"><span style="color:var(--ok)">Nazar Utaar offer (50% off first frame)</span><span style="color:var(--ok)">−${rupee(t.off)}</span></div>
+      <div class="sumrow"><span style="color:var(--kajal);font-weight:700">To pay</span><span class="price" style="font-size:17px">${rupee(t.total)}</span></div>
+    </div>
+    <div class="note">${ic('rx',18)}<span>Need lenses but no recent prescription? Book a free eye check-up at checkout.</span></div>
+  </div>
+  <div class="sticky-cta"><button class="btn btn-p btn-block" data-a="go" data-v="checkout">Checkout · ${rupee(t.total)}</button></div>`;
+},
+checkout(){
+  const t=totals(), c=S.co;
+  const o=(grp,id,name,d)=>`<button class="opt ${c[grp]===id?'on':''}" data-a="co" data-v="${grp}:${id}"><span class="radio"></span><span class="body"><b>${name}</b><span>${d}</span></span></button>`;
+  return `<div class="pad" style="padding-bottom:0">
+    <div class="sec"><span class="lbl">Prescription</span><div class="stack">
+      ${o('rx','upload','Upload a photo of my prescription','We check it before cutting lenses')}
+      ${o('rx','checkup','Book a free eye check-up first','At a store or at home, then we fit the lenses')}
+      ${o('rx','later','Add it later','We’ll WhatsApp you a reminder')}</div></div>
+    <div class="sec"><span class="lbl">Delivery</span><div class="stack">
+      ${o('del','home','Home delivery','HSR Layout, Bengaluru · arrives in 4 days · free')}
+      ${STORES.map(s=>`<button class="opt ${c.del==='store'&&c.store===s.id?'on':''}" data-a="co" data-v="pickup:${s.id}"><span class="radio"></span><span class="body"><b>Pick up at ${s.name}</b><span>Ready in 2 days · free fitting check · ${s.dist}</span></span></button>`).join('')}</div>
+      <p class="small muted">Saathi messages you when your spectacles are being prepared and the moment they're ready. You can switch between pickup and delivery until dispatch.</p></div>
+    <div class="sec"><span class="lbl">Payment</span><div class="stack">
+      ${o('pay','upi','UPI','Any UPI app')}
+      ${o('pay','card','Card','Credit or debit, EMI from ₹3,000')}
+      ${o('pay','cod','Pay on delivery','Cash or UPI at the door')}</div></div>
+  </div>
+  <div class="sticky-cta"><button class="btn btn-p btn-block" data-a="place">Place order · ${rupee(t.total)}</button></div>`;
+},
+ordered(){
+  const o=S.order;
+  return `<div class="pad"><div class="done">
+    <div class="big">${ic('check',40,2.4)}</div><h2>Order placed</h2>
+    <p class="muted">${o.items.length} item${o.items.length>1?'s':''} · ${rupee(o.total)} · ${o.del==='home'?'home delivery by':'pickup at '+storeOf(o).name+' from'} <b style="color:var(--kajal)">${fmtDate(o.eta)}</b></p>
+    <span class="bid">${o.id}</span></div>
+    ${o.rx==='checkup'?`<div class="remind"><span style="color:var(--terracotta)">${ic('eye',24)}</span><div style="flex:1;display:flex;flex-direction:column;gap:6px"><b>One more step: your free check-up</b><span class="small">We cut your lenses after the test. Pick a slot now.</span><button class="btn btn-p" style="align-self:flex-start;padding:9px 14px" data-a="startbk" data-v="checkup">Book check-up</button></div></div>`:''}
+    <div class="note">${ic('bell',18)}<span>Saathi, your AI assistant, will message you at every step: prescription check, lenses being prepared, quality check and ${o.del==='home'?'delivery':'ready for pickup'}.</span></div>
+    <button class="btn btn-i btn-block" data-a="track" data-v="${o.id}">Track order</button>
+    <button class="btn btn-s btn-block" data-a="tab" data-v="home">Back to home</button>
+  </div>`;
+}
+};
+
+function bkItem(b){
+  const s=SERVICES[b.svc]; const on=b.status==='upcoming';
+  const pill={upcoming:['Upcoming',''],cancelled:['Cancelled','off'],rescheduled:['Rescheduled','off'],completed:['Completed','']}[b.status]||['',''];
+  return `<div class="bk-item"><span class="ic" style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:${s.bg};color:${s.fg}">${ic(s.icon,20)}</span>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><b>${s.title}${b.whoName&&b.whoName!=='Me'?' · '+esc(b.whoName):''}</b>
+    <span class="small muted">${fmtDate(new Date(b.date))}, ${b.slot} · ${esc(b.placeShort)}</span>
+    <span><span class="pill ${pill[1]}">${pill[0]}</span>${b.confirmed&&on?' <span class="pill">Confirmed</span>':''} <span class="small muted">${b.id}</span></span>
+    ${on?`<span style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><button class="link" data-a="resched-bk" data-v="${b.id}">Reschedule</button><button class="link" data-a="cancel" data-v="${b.id}">Cancel</button><button class="link" style="color:var(--muted)" data-a="visitdone" data-v="${b.id}">Demo: mark visit done</button></span>`:''}</div></div>`;
+}
+
+/* ---------- Booking steps ---------- */
+const STEPS = {
+who(){ const b=S.bk; return `<div class="stack">${MEMBERS.map(m=>`<button class="opt ${b.who===m.id?'on':''}" data-a="bkset" data-v="who:${m.id}"><span class="radio"></span><span class="body"><b>${m.name}</b><span>${m.meta}</span></span></button>`).join('')}
+  <button class="link" style="align-self:flex-start;margin-top:4px" data-a="toast" data-v="Adding family members is in the next version">+ Add a family member</button></div>`; },
+reason(){ const b=S.bk; return `<div class="chips" style="flex-wrap:wrap">${REASONS.map(r=>`<button class="chip ${b.reason===r?'on':''}" data-a="bkset" data-v="reason:${esc(r)}">${r}</button>`).join('')}</div>
+  <div class="note warn">${ic('info',18)}<span><b>Sudden loss of vision, an eye injury or chemical in the eye?</b> Don't wait for a slot. Go to the nearest emergency department now.</span></div>`; },
+doctor(){ const b=S.bk; return CLINICS.map(c=>`<div class="sec"><div><b style="color:var(--indigo)">${c.name}</b> <span class="small muted">Partner hospital · ${c.area}</span></div><div class="stack">${c.docs.map(d=>`<button class="opt ${b.doctor===d.id?'on':''}" data-a="bkset" data-v="doctor:${d.id}"><span class="radio"></span><span class="avatar" style="background:${d.color}">${d.name.split(' ')[1][0]}</span><span class="body"><b>${d.name}</b><span>${d.spec} · ${d.yrs} yrs<br>Speaks ${d.lang}</span></span><span style="text-align:right"><span class="price">${rupee(d.fee)}</span><br><span class="small" style="color:var(--ok)">${['Tomorrow','In 2 days','In 3 days'][d.next]}</span></span></button>`).join('')}</div></div>`).join(''); },
+frames(){ const b=S.bk; return `<p class="small muted">${b.frames.length} of 5 picked. Tap to add or remove.</p><div class="grid">${FRAMES.filter(f=>f.cat!=='kids').map(f=>`<button class="pcard" style="${b.frames.includes(f.id)?'border:2px solid var(--indigo)':''}" data-a="bkframe" data-v="${f.id}">${b.frames.includes(f.id)?`<span class="tg" style="background:var(--ok)">${ic('check',12,3)} Picked</span>`:''}<div class="img">${frameSVG(f)}</div><div class="info"><span class="nm">${esc(f.name)}</span><span class="price">${rupee(f.price)}</span></div></button>`).join('')}</div>`; },
+purpose(){ const b=S.bk; return `<div class="stack">${PURPOSES.map(p=>`<button class="opt ${b.purpose===p.id?'on':''}" data-a="bkset" data-v="purpose:${p.id}"><span class="radio"></span><span class="body"><b>${p.name}</b><span>${p.d}</span></span></button>`).join('')}</div>`; },
+where(){
+  const b=S.bk;
+  const stores = `<div class="stack">${STORES.map(s=>`<button class="opt ${b.store===s.id?'on':''}" data-a="bkset" data-v="store:${s.id}"><span class="radio"></span><span class="body"><b>${s.name}</b><span>${s.area} · ${s.hours}</span></span><span class="small muted">${s.dist}</span></button>`).join('')}</div>`;
+  const addr = `<div class="sec"><label class="lbl" for="addr">Visit address</label><textarea class="addr" id="addr" rows="3">${esc(b.address)}</textarea>
+    <div class="note">${ic('info',18)}<span>${b.svc==='hometry'?'A Nazariya stylist brings your frames and measures your PD (the distance between your pupils).':'An optometrist brings a portable vision kit. The test takes about 25 minutes.'}</span></div></div>`;
+  if(b.svc==='checkup') return `<div class="seg"><button class="${b.mode==='store'?'on':''}" data-a="bkset" data-v="mode:store">At a store · Free</button><button class="${b.mode==='home'?'on':''}" data-a="bkset" data-v="mode:home">At home · ₹99</button></div>${b.mode==='store'?stores:addr}`;
+  if(b.svc==='hometry') return addr;
+  return stores;
+},
+when(){
+  const b=S.bk; const ds=days();
+  return `<div class="dates">${ds.map((d,i)=>`<button class="date ${b.di===i?'on':''}" data-a="bkset" data-v="di:${i}"><span>${DAY[d.getDay()]}</span><b>${d.getDate()}</b><span>${MON[d.getMonth()]}</span></button>`).join('')}</div>
+  <div class="sec"><span class="lbl">Available slots</span><div class="slots">${SLOTS.map((s,i)=>`<button class="slot ${b.slot===s?'on':''}" data-a="bkset" data-v="slot:${s}" ${slotTaken(b.di,i)?'disabled aria-label="'+s+' booked"':''}>${s}</button>`).join('')}</div></div>
+  <p class="small muted">${b.svc==='doctor'?'Consultation is about 15 minutes. Please arrive 10 minutes early with any old prescriptions.':b.svc==='checkup'?'Takes about 20 minutes. Bring your current glasses if you have them.':'Slots are 30 minutes.'}</p>`;
+},
+review(){
+  const b=S.bk; const draft=buildBooking();
+  return `<div class="card" style="padding:4px 16px">${summaryRows(draft)}</div>
+  <div class="card">
+    <button class="toggle ${b.remind?'on':''}" data-a="bkset" data-v="remind:${b.remind?0:1}"><span style="flex:1"><b>WhatsApp reminder a day before</b><br><span class="small muted">In English or Hindi</span></span><span class="sw2"></span></button>
+    ${b.svc==='checkup'||b.svc==='doctor'?`<button class="toggle ${b.yearly?'on':''}" style="border-top:1px solid var(--line)" data-a="bkset" data-v="yearly:${b.yearly?0:1}"><span style="flex:1"><b>Remind me of the next check-up</b><br><span class="small muted">In 12 months</span></span><span class="sw2"></span></button>`:''}
+  </div>`;
+}
+};
+function stepOk(){
+  const b=S.bk; const step=SERVICES[b.svc].steps[b.i];
+  return {who:!!b.who, reason:!!b.reason, doctor:!!b.doctor, frames:b.frames.length>0, purpose:!!b.purpose,
+    where: (b.svc==='checkup'&&b.mode==='home')||b.svc==='hometry' ? (b.address||'').trim().length>8 : !!b.store,
+    when: b.di!=null && !!b.slot, review:true}[step];
+}
+function buildBooking(){
+  const b=S.bk; const d=days()[b.di]; const doc=allDocs().find(x=>x.id===b.doctor);
+  const store=STORES.find(s=>s.id===b.store);
+  const home = (b.svc==='checkup'&&b.mode==='home')||b.svc==='hometry';
+  const who = MEMBERS.find(m=>m.id===b.who);
+  let fee = 'Free', place, placeShort;
+  if(b.svc==='doctor'){ fee=rupee(doc.fee)+' at the hospital'; place=`${doc.clinic.name}, ${doc.clinic.area.split(' · ')[0]}`; placeShort=doc.clinic.name; }
+  else if(home){ place=b.address; placeShort='At home'; if(b.svc==='checkup') fee='₹99'; }
+  else { place=`${store.name}, ${store.area}`; placeShort=store.name; }
+  return {svc:b.svc, date:d, slot:b.slot, whoName:who?who.name:'', place, placeShort, fee,
+    doctorName:doc?doc.name:'', doctorSpec:doc?doc.spec:'', reason:b.reason, frames:[...b.frames],
+    purpose:(PURPOSES.find(p=>p.id===b.purpose)||{}).name, remind:b.remind, yearly:b.yearly};
+}
+function summaryRows(x){
+  const r=[];
+  r.push(['Service', SERVICES[x.svc].title]);
+  if(x.whoName) r.push(['For', x.whoName]);
+  if(x.reason) r.push(['Reason', x.reason]);
+  if(x.doctorName) r.push(['Doctor', `${x.doctorName}<br><span class="small muted">${x.doctorSpec}</span>`]);
+  if(x.purpose) r.push(['Purpose', x.purpose]);
+  if(x.frames && x.frames.length) r.push(['Frames', x.frames.map(id=>byId(id).name).join(', ')]);
+  r.push(['When', x.date?`${fmtDate(x.date)}, ${x.slot}`:'']);
+  r.push(['Where', esc(x.place||'')]);
+  r.push(['Fee', x.fee]);
+  return r.map(([k,v])=>`<div class="sumrow"><span>${k}</span><span>${v}</span></div>`).join('');
+}
+function startBooking(svc, preset={}){
+  S.bk = {svc, i:0, who:svc==='hometry'||svc==='visit'?'me':null, mode:'store', store:null, address:DEFAULT_ADDR, reason:null, doctor:null, frames:[], purpose:null, di:0, slot:null, remind:true, yearly:true, ...preset};
+  go('flow');
+}
+
+/* ---------- Cart ---------- */
+function totals(items){
+  items=items||S.cart; let frames=0, lenses=0; items.forEach(c=>{ frames+=byId(c.fid).price; lenses+=(LENSES.find(l=>l.id===c.lens)||{p:0}).p; });
+  const off = items.length? Math.round(Math.min(...items.map(c=>byId(c.fid).price))/2) : 0;
+  return {frames, lenses, off, total: frames+lenses-off};
+}
+function addToCart(fid, color, lens){ S.cart.push({fid, color:color||byId(fid).color, lens:lens||'sv'}); save(); renderTabs(); toast(`${byId(fid).name} added to cart`); }
+
+/* ---------- Saathi AI assistant, orders ---------- */
+const cap = t => t ? t[0].toUpperCase()+t.slice(1) : t;
+const nowLabel = () => 'Today ' + new Date().toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'});
+const storeOf = o => STORES.find(x=>x.id===o.store) || STORES[0];
+function agent(text, quick, when){ S.msgs.push({from:'ai', text, quick:quick||[], when:when||nowLabel()}); if(S.screen!=='inbox') S.unread++; save(); }
+const TIP = {checkup:'Please bring your current glasses.', doctor:'Carry old prescriptions and any recent reports.', hometry:'Our stylist will call 30 minutes before arriving.', visit:'Show your booking ID at the counter.'};
+function confirmBooking(){
+  const bk=buildBooking(); bk.id='NZ-'+(4000+Math.floor(Math.random()*5999)); bk.status='upcoming';
+  const raw={...S.bk, frames:[...S.bk.frames]}; delete raw.reschedOf; bk.raw=raw;
+  let lead='Namaste! Your';
+  if(S.bk.reschedOf){ const old=S.bookings.find(x=>x.id===S.bk.reschedOf); if(old) old.status='rescheduled'; lead='Done, rescheduled. Your'; }
+  S.bookings.push(bk); S.lastBk=bk;
+  const nm=SERVICES[bk.svc].title.toLowerCase(), who=bk.whoName&&bk.whoName!=='Me'?' for '+bk.whoName:'';
+  agent(`${lead} ${nm}${who} is booked for ${fmtDate(bk.date)}, ${bk.slot} at ${bk.placeShort}. Booking ID ${bk.id}.`);
+  if(bk.remind){ const db=new Date(bk.date); db.setDate(db.getDate()-1);
+    agent(`Reminder: ${nm}${who} is tomorrow at ${bk.slot}, ${bk.placeShort}. ${TIP[bk.svc]} Will you make it?`, [['Yes, confirmed','confirm',bk.id],['Reschedule','resched',bk.id],['Cancel','cancel',bk.id]], `${fmtDate(db)} · 9:00 am · scheduled`); }
+  save();
+}
+function followUp(b){
+  b.status='completed'; const whose=b.whoName&&b.whoName!=='Me'?b.whoName+'’s':'your';
+  if(b.svc==='checkup'){ const nx=new Date(b.date); nx.setFullYear(nx.getFullYear()+1);
+    agent(`Hope the check-up went well! ${cap(whose)} new prescription is saved to the profile (sample: right eye −1.25, left eye −1.00). I've set the next check-up reminder for ${MON[nx.getMonth()]} ${nx.getFullYear()}. Want to see frames for the new power?`, [['Show me frames','shop',''],['Rate the visit','rateask',b.id]]); }
+  else if(b.svc==='doctor'){ agent(`How was the visit with ${b.doctorName}? The doctor's notes are saved in ${whose} health records. A follow-up was suggested in 3 months. Shall I book it?`, [['Book follow-up','book','doctor'],['Rate the visit','rateask',b.id]]); }
+  else if(b.svc==='hometry'){ const f=byId(b.frames[0]); agent(`Did you like any of the frames? I've saved all ${b.frames.length} to your wishlist, and the launch offer still applies.`, f?[['Add '+f.name+' to cart','addcart',f.id],['Keep browsing','shop','']]:[['Keep browsing','shop','']]); }
+  else agent(`Thanks for visiting ${b.placeShort}! How was it?`, [['Great','rate','good'],['Okay','rate','ok'],['Not good','rate','bad']]);
+  save();
+}
+function STAGES(o){ return ['Order placed','Prescription checked','Spectacles being prepared','Quality check passed', o.del==='home'?'Out for delivery':'Ready for pickup', o.del==='home'?'Delivered':'Collected']; }
+function stageSub(o,i){ const st=storeOf(o); return ['We received your order', o.rx==='later'&&i>o.stage?'Waiting for your prescription':'Verified by our optometrist','Lenses cut to your power and fitted into the frame','Power, alignment and fit checked', o.del==='home'?'With our delivery partner':`At ${st.name} · ${st.hours}`,'Enjoy your new spectacles'][i]; }
+function placeOrder(items, co){
+  const t=totals(items); const eta=new Date(); eta.setDate(eta.getDate()+(co.del==='home'?4:2));
+  const o={id:'NZO-'+(10000+Math.floor(Math.random()*89999)), items:items.map(x=>({...x})), total:t.total, del:co.del, store:co.store||'s1', rx:co.rx, stage:0, placed:new Date(), eta};
+  S.orders.push(o); S.order=o;
+  const n=byId(items[0].fid).name;
+  agent(`Order ${o.id} received! ${n}${items.length>1?' and '+(items.length-1)+' more':''}, ${rupee(o.total)}.\nI'll message you at each step: prescription check, lenses being prepared, quality check, and ${o.del==='home'?'delivery':'when it is ready at '+storeOf(o).name}.`, [['Track order','track',o.id]]);
+  if(o.rx==='later') agent('One thing: please upload your prescription when you can. We start preparing your lenses right after.', [['Book a free check-up instead','book','checkup']]);
+  save(); return o;
+}
+function stageMsg(o){
+  const n=byId(o.items[0].fid).name, st=storeOf(o);
+  switch(o.stage){
+    case 1: return [`Prescription checked by our optometrist for order ${o.id}. Your lenses go into production now.`];
+    case 2: return [`Good news, your spectacles are being prepared! Lenses are being cut to your power and fitted into the ${n} frame.`];
+    case 3: return [`Quality check passed: power, alignment and fit all verified. ${o.del==='home'?'Handing it to our delivery partner next.':'Sending it to '+st.name+' next.'}`, o.del==='home'?[['Switch to store pickup','switch',o.id]]:[['Switch to home delivery','switch',o.id]]];
+    case 4: return o.del==='home' ? ['Your spectacles are out for delivery and will reach you today between 4 and 7 pm. The delivery partner will call before arriving.'] : [`Your spectacles are ready for pickup at ${st.name}, ${st.area}. Open ${st.hours}. Show order ID ${o.id} for a free fitting check.`, [['Deliver to home instead','switch',o.id]]];
+    default: return [`${o.del==='home'?'Delivered':'Collected'}! Enjoy your new Nazariya. Tip: clean the lenses with the microfibre cloth, not your dupatta or kurta. How do they feel?`, [['Perfect fit','rate','good'],['Need an adjustment','adjust',o.id]]];
+  }
+}
+function advance(o){ if(o.stage>=5) return; o.stage++; const [t,q]=stageMsg(o); agent(t,q||[]); save(); }
+const lockedOf = o => (o.del==='home'&&o.stage>=4) || o.stage>=5;
+function setFulfilment(oid, val){
+  const o=S.orders.find(x=>x.id===oid); if(!o) return;
+  if(lockedOf(o)){ toast('This order is already out for delivery'); return; }
+  if(val==='home') o.del='home'; else { o.del='store'; o.store=val; }
+  if(o.stage===4 && o.del==='home') o.stage=3;
+  agent(`Done! Order ${o.id} will now be ${o.del==='home'?'delivered to your home in HSR Layout':'kept for pickup at '+storeOf(o).name}.`);
+  save();
+}
+function doQuick(act, val){
+  const b=S.bookings.find(x=>x.id===val), o=S.orders.find(x=>x.id===val);
+  switch(act){
+    case 'confirm': if(b){ b.confirmed=true; agent('Thank you, see you then! Marked as confirmed.'); } soft(); break;
+    case 'resched': if(b&&b.status==='upcoming'){ S.bk={...b.raw, frames:[...(b.raw.frames||[])], i:SERVICES[b.svc].steps.indexOf('when'), slot:null, reschedOf:b.id}; go('flow'); } else { agent('That booking is no longer active. Want to book a new one?', [['Book a check-up','book','checkup']]); soft(); } break;
+    case 'cancel': if(b&&b.status==='upcoming'){ b.status='cancelled'; agent(`Cancelled. Want to pick another time for the ${SERVICES[b.svc].title.toLowerCase()}?`, [['Book again','book',b.svc]]); } soft(); break;
+    case 'book': startBooking(val); break;
+    case 'shop': tab('shop'); break;
+    case 'addcart': addToCart(val); soft(); break;
+    case 'rateask': agent('How was it?', [['Great','rate','good'],['Okay','rate','ok'],['Not good','rate','bad']]); soft(); break;
+    case 'rate': agent({good:'Thank you! That made our day.', ok:'Thanks for telling us. We will keep improving.', bad:'Sorry about that. The store manager will call you within 24 hours to make it right.'}[val]||'Thank you!'); soft(); break;
+    case 'switch': if(o) setFulfilment(o.id, o.del==='home'?(o.store||'s1'):'home'); soft(); break;
+    case 'track': S.trackId=val; go('track'); break;
+    case 'adjust': startBooking('visit',{purpose:'repair'}); break;
+    default: soft();
+  }
+}
+function ordersBlock(){
+  if(!S.orders.length) return '';
+  return `<div class="sec"><div class="sec-h"><h2>Your orders</h2></div><div class="card">${S.orders.slice().reverse().map(o=>{ const f=byId(o.items[0].fid);
+    return `<button class="cline" style="width:100%;text-align:left" data-a="track" data-v="${o.id}"><div class="th">${frameSVG(f,o.items[0].color)}</div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><b>${o.id}</b><span class="small muted">${esc(f.name)}${o.items.length>1?' + '+(o.items.length-1)+' more':''} · ${o.del==='home'?'Home delivery':'Pickup'}</span><span><span class="pill ${o.stage>=5?'off':''}">${STAGES(o)[o.stage]}</span></span></div>${ic('chev',18)}</button>`; }).join('')}</div></div>`;
+}
+const msgHTML = (m,i) => `<div class="msg ${m.from}">${esc(m.text)}<span class="when">${esc(m.when)}</span></div>${m.quick&&m.quick.length?`<div class="qr">${m.quick.map(([l,a,v])=>`<button data-a="qr" data-v="${i}|${a}|${esc(v)}">${esc(l)}</button>`).join('')}</div>`:''}`;
+SCREENS.inbox = function(){
+  const intro = `<div class="msg ai">Namaste! I'm Saathi, Nazariya's AI assistant. I remind you before visits, follow up after, and tell you the moment your spectacles are being prepared and ready. Ask me anything about your bookings or orders.<span class="when">Nazariya Saathi</span></div>`;
+  return `<div class="agent-head"><span class="saathi">${ic('eye',20)}</span><div><b>Nazariya Saathi</b> · AI assistant<br>Also sends these updates on WhatsApp, in English or Hindi</div></div>
+  <div class="chat" id="chat">${intro}${S.msgs.map(msgHTML).join('')}${S.msgs.length?'':`<div class="qr"><button data-a="startbk" data-v="checkup">Book a check-up</button><button data-a="demo" data-v="agent">Show a sample order</button></div>`}</div>
+  <form class="composer" id="composer"><input id="cm" placeholder="e.g. Is my order ready?" autocomplete="off" aria-label="Message Saathi"><button type="submit" aria-label="Send">${ic('chev',20,2.4)}</button></form>`;
+};
+SCREENS.track = function(){
+  const o=S.orders.find(x=>x.id===S.trackId); if(!o) return '<div class="pad"><div class="card empty">Order not found.</div></div>';
+  const st=STAGES(o), locked=lockedOf(o), f=byId(o.items[0].fid);
+  const opt=(val,on,name,d)=>`<button class="opt ${on?'on':''}" data-a="ful" data-v="${o.id}|${val}" ${locked?'disabled':''}><span class="radio"></span><span class="body"><b>${name}</b><span>${d}</span></span></button>`;
+  return `<div class="pad">
+    <div class="card" style="padding:14px;display:flex;gap:12px;align-items:center"><div style="width:84px;flex:none">${frameSVG(f,o.items[0].color)}</div><div style="flex:1;min-width:0"><b>${esc(o.items.map(it=>byId(it.fid).name).join(', '))}</b><div class="small muted">${o.id} · ${rupee(o.total)}</div><div class="small" style="color:var(--ok);font-weight:600">${o.stage>=5?st[5]:(o.del==='home'?'Arrives by ':'Ready for pickup by ')+fmtDate(new Date(o.eta))}</div></div></div>
+    <div class="card timeline">${st.map((t,i)=>`<div class="tl ${i<=o.stage?'is-done':i===o.stage+1?'is-now':'is-todo'}"><span class="dot">${i<=o.stage?ic('check',14,3):''}</span><div><b>${t}</b><span class="small muted">${i===o.stage+1?'Up next · ':''}${stageSub(o,i)}</span></div></div>`).join('')}</div>
+    <div class="sec"><span class="lbl">How do you want your spectacles?</span><div class="stack">
+      ${opt('home', o.del==='home', 'Home delivery', 'HSR Layout, Bengaluru · free')}
+      ${STORES.map(x=>opt(x.id, o.del==='store'&&o.store===x.id, 'Pick up at '+x.name, x.area+' · free fitting check')).join('')}</div>
+      <p class="small muted">${locked?'This can no longer be changed because the order is out for delivery or complete.':'You can switch any time until the order is dispatched.'}</p></div>
+    <button class="btn btn-i btn-block" data-a="go" data-v="inbox">${ic('bell',18)}Open Saathi updates</button>
+    ${o.stage<5?`<button class="demo-btn" data-a="advance" data-v="${o.id}">Demo: move to "${st[o.stage+1]}"</button>`:''}
+  </div>`;
+};
+/* AI replies: Claude through the page's sample capability when the viewer allows it, else scripted demo replies */
+const sampP = (window.claude && typeof window.claude.use==='function') ? Promise.resolve(window.claude.use('sample')).catch(()=>null) : Promise.resolve(null);
+let aiOff=false, busy=false;
+function ctxData(){ return {today:fmtDate(new Date()), family:MEMBERS.map(m=>m.name+' ('+m.meta+')'),
+  bookings:S.bookings.map(b=>({id:b.id, service:SERVICES[b.svc].title, for:b.whoName||'Me', when:fmtDate(new Date(b.date))+', '+b.slot, where:b.placeShort, status:b.status})),
+  orders:S.orders.map(o=>({id:o.id, items:o.items.map(i=>byId(i.fid).name), status:STAGES(o)[o.stage], next_step:STAGES(o)[o.stage+1]||'none', fulfilment:o.del==='home'?'home delivery to HSR Layout':'pickup at '+storeOf(o).name, expected:fmtDate(new Date(o.eta))})),
+  stores:STORES.map(s=>s.name+', '+s.area+', open '+s.hours)}; }
+function ruleReply(t){
+  t=t.toLowerCase();
+  const up=S.bookings.filter(b=>b.status==='upcoming').sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+  const o=S.orders.filter(x=>x.stage<5).slice(-1)[0];
+  if(/emergenc|injur|sudden|chemical|can't see|cannot see/.test(t)) return {reply:'Please go to the nearest emergency department right now, or call 112. Sudden vision changes and eye injuries need care today, not a booking.', action:'none'};
+  if(/resched|postpone|change.*(time|date|slot)|another (time|day)/.test(t)) return up?{reply:`Sure. Your next booking is the ${SERVICES[up.svc].title.toLowerCase()} on ${fmtDate(new Date(up.date))}, ${up.slot}. Tap below to pick a new time.`, action:'reschedule', id:up.id}:{reply:'You have no upcoming bookings right now. Shall I book a check-up?', action:'book_checkup'};
+  if(/cancel/.test(t)) return up?{reply:`Your next booking is the ${SERVICES[up.svc].title.toLowerCase()} on ${fmtDate(new Date(up.date))}, ${up.slot}. Do you want me to cancel it?`, action:'cancel', id:up.id}:{reply:'There is nothing to cancel right now.', action:'none'};
+  if(o && /pick ?up|collect|store/.test(t)) return {reply:o.del==='store'?`Order ${o.id} is already set for pickup at ${storeOf(o).name}.`:`I can switch order ${o.id} to pickup at ${storeOf(o).name}. It will be ready by ${fmtDate(new Date(o.eta))}.`, action:o.del==='store'?'none':'switch_pickup', id:o.id};
+  if(o && /deliver|home|courier/.test(t)) return {reply:o.del==='home'?`Order ${o.id} is already coming to your home in HSR Layout.`:`I can switch order ${o.id} to home delivery in HSR Layout instead.`, action:o.del==='home'?'none':'switch_delivery', id:o.id};
+  if(/order|ready|spectacle|specs|glasses|chashma|status|kab|when/.test(t)) return o?{reply:`Order ${o.id}: ${STAGES(o)[o.stage].toLowerCase()}. Next step: ${(STAGES(o)[o.stage+1]||'').toLowerCase()}. Expected ${fmtDate(new Date(o.eta))}. I'll message you the moment it's ready.`, action:'track', id:o.id}:{reply:'You have no open orders right now. Want to browse frames?', action:'none'};
+  if(/doctor|pain|red|itch|watery|blur|diabet|cataract/.test(t)) return {reply:'That is worth showing an eye doctor. I can book you with a specialist at a partner hospital, usually within 1 or 2 days.', action:'book_doctor'};
+  if(/check|test|power|eye/.test(t)) return {reply:'An eye check-up takes about 20 minutes. It is free at any Nazariya store, or ₹99 at home.', action:'book_checkup'};
+  return {reply:'I can help with your bookings, reminders and orders. Try "reschedule my appointment", "is my order ready?" or "switch to store pickup".', action:'none'};
+}
+async function aiReply(text){
+  const s = aiOff ? null : await sampP;
+  if(s){
+    const recent=S.msgs.slice(-7,-1).map(m=>(m.from==='me'?'Customer: ':'Saathi: ')+m.text).join('\n');
+    const prompt=`You are Saathi, the AI assistant inside Nazariya, an Indian eyewear and eye-care app (this is a prototype with sample data). Voice: a warm, stylish friend who knows eye health; simple English with a light Hinglish touch; no medical jargon, no fear. Never diagnose. For sudden vision loss, an eye injury or chemicals in the eye, tell them to go to the nearest emergency department now. Keep replies under 60 words.
+You may suggest one action, which the customer confirms with a button: "reschedule" or "cancel" (booking id), "switch_pickup" or "switch_delivery" (order id), "track" (order id), "book_checkup", "book_doctor", or "none". Suggest an action only when the customer asks for it.
+
+App data (JSON): ${JSON.stringify(ctxData())}
+
+Recent chat:
+${recent}
+
+Customer: ${text}
+
+Reply with only JSON like {"reply":"...","action":"none","id":""}.`;
+    try{ const r=await s.json(prompt,{modelTier:'quick',cache:false}); if(r&&typeof r.reply==='string'&&r.reply.trim()) return {reply:r.reply.trim(), action:String(r.action||'none'), id:String(r.id||'')}; }
+    catch(e){ if(e&&['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(e.code)) aiOff=true; }
+  }
+  return ruleReply(text);
+}
+function quickFor(r){
+  const b=S.bookings.find(x=>x.id===r.id&&x.status==='upcoming'), o=S.orders.find(x=>x.id===r.id);
+  switch(r.action){
+    case 'reschedule': return b?[['Pick a new time','resched',b.id]]:[];
+    case 'cancel': return b?[['Yes, cancel it','cancel',b.id],['Keep it','confirm',b.id]]:[];
+    case 'switch_pickup': return o&&o.del==='home'&&!lockedOf(o)?[['Switch to pickup','switch',o.id]]:[];
+    case 'switch_delivery': return o&&o.del==='store'&&!lockedOf(o)?[['Switch to home delivery','switch',o.id]]:[];
+    case 'track': return o?[['Track order','track',o.id]]:[];
+    case 'book_checkup': return [['Book a check-up','book','checkup']];
+    case 'book_doctor': return [['Book a doctor','book','doctor']];
+  }
+  return [];
+}
+document.addEventListener('submit', async e=>{
+  if(e.target.id!=='composer') return; e.preventDefault();
+  const inp=$('#cm'); const t=inp.value.trim(); if(!t||busy) return;
+  busy=true; S.msgs.push({from:'me', text:t, when:nowLabel()}); save(); soft();
+  const chat=$('#chat'); if(chat){ chat.insertAdjacentHTML('beforeend','<div class="msg ai typing">Saathi is typing…</div>'); $('#screen').scrollTop=$('#screen').scrollHeight; }
+  let r; try{ r=await aiReply(t); }catch(_){ r=ruleReply(t); }
+  busy=false; agent(r.reply, quickFor(r)); if(S.screen==='inbox'){ soft(); const c=$('#cm'); c&&c.focus(); } else renderTop();
+});
+
+/* ---------- Render ---------- */
+function renderGrid(){
+  const g=$('#grid'); if(!g) return;
+  const q=S.q.trim().toLowerCase();
+  const list = FRAMES.filter(f=>(S.cat==='all'||f.cat===S.cat)&&(!S.face||f.face.includes(S.face))&&(!q||(f.name+' '+f.shape+' '+f.cat+' '+(f.tag||'')).toLowerCase().includes(q)));
+  g.innerHTML = `<p class="small muted" style="margin-bottom:10px">${list.length} frame${list.length===1?'':'s'}</p>` + (list.length?`<div class="grid">${list.map(pcard).join('')}</div>`:`<div class="card empty">No frames match. Try another filter.</div>`);
+}
+function render(resetScroll){
+  if(S.screen==='inbox' && S.unread){ S.unread=0; save(); }
+  renderTop(); renderTabs();
+  const sc=$('#screen'); const y=sc.scrollTop;
+  sc.innerHTML = SCREENS[S.screen]();
+  sc.scrollTop = resetScroll ? 0 : y;
+  if(S.screen==='shop') renderGrid();
+  if(S.screen==='tryon') bindTryon();
+  if(S.screen==='inbox') sc.scrollTop=sc.scrollHeight;
+}
+function soft(){ render(false); }
+
+/* ---------- Try-on drag ---------- */
+function bindTryon(){
+  const st=$('#tstage'), ov=$('#ov'); if(!st||!ov) return;
+  let drag=null;
+  ov.addEventListener('pointerdown', e=>{ drag={x:e.clientX,y:e.clientY,ox:S.ov.x,oy:S.ov.y}; ov.setPointerCapture(e.pointerId); e.preventDefault(); });
+  ov.addEventListener('pointermove', e=>{ if(!drag) return; const r=st.getBoundingClientRect();
+    S.ov.x=Math.max(5,Math.min(95,drag.ox+(e.clientX-drag.x)/r.width*100)); S.ov.y=Math.max(5,Math.min(95,drag.oy+(e.clientY-drag.y)/r.height*100));
+    ov.style.left=S.ov.x+'%'; ov.style.top=S.ov.y+'%'; });
+  const end=()=>{drag=null}; ov.addEventListener('pointerup',end); ov.addEventListener('pointercancel',end);
+  $('#sz').addEventListener('input', e=>{ S.ov.w=+e.target.value; ov.style.width=S.ov.w+'%'; });
+}
+function loadPhoto(file){
+  if(!file) return; const r=new FileReader();
+  r.onload=()=>{ S.photo=r.result; S.model='photo'; S.ov={x:50,y:42,w:46}; S.screen='tryon'; render(false); toast('Drag the frame onto your eyes'); };
+  r.readAsDataURL(file);
+}
+$('#selfie').addEventListener('change', e=>{ loadPhoto(e.target.files[0]); e.target.value=''; });
+$('#photo').addEventListener('change', e=>{ loadPhoto(e.target.files[0]); e.target.value=''; });
+
+/* ---------- Events ---------- */
+document.addEventListener('input', e=>{
+  if(e.target.id==='q'){ S.q=e.target.value; renderGrid(); }
+  if(e.target.id==='addr' && S.bk){ S.bk.address=e.target.value; const btn=document.querySelector('.sticky-cta .btn'); if(btn) btn.disabled=!stepOk(); }
+});
+document.addEventListener('keydown', e=>{
+  if(e.target.id==='hq' && e.key==='Enter'){ S.q=e.target.value; S.cat='all'; S.face=null; tab('shop'); }
+});
+document.addEventListener('click', e=>{
+  const el=e.target.closest('[data-a]'); if(!el) return;
+  const a=el.dataset.a, v=el.dataset.v;
+  switch(a){
+    case 'tab': tab(v); break;
+    case 'go': go(v); break;
+    case 'back': back(); break;
+    case 'toast': toast(v); break;
+    case 'city': { const i=CITIES.indexOf(S.city); S.city=CITIES[(i+1)%CITIES.length]; save(); renderTop(); toast(`Showing stores in ${S.city} (sample stores are in Bengaluru)`); break; }
+    case 'cat': S.cat=v; soft(); break;
+    case 'face': S.face = S.face===v?null:v; soft(); break;
+    case 'faceshop': S.face=v; S.cat='all'; S.q=''; go('shop'); break;
+    case 'catshop': S.cat=v; S.face=null; S.q=''; go('shop'); break;
+    case 'product': S.pid=v; S.color=null; S.lens=byId(v).tint?'none':'sv'; go('product'); break;
+    case 'color': S.color=v; soft(); break;
+    case 'lens': S.lens=v; soft(); break;
+    case 'addcart': addToCart(S.pid, S.color, S.lens); break;
+    case 'quickadd': addToCart(v, null, byId(v).tint?'none':'sv'); break;
+    case 'tryfrom': S.tf=v; if(S.model!=='photo'){S.ov={x:50,y:44.7,w:52};} go('tryon'); break;
+    case 'tf': { const th=document.querySelector('.thumbs'); const sl=th?th.scrollLeft:0; S.tf=v; soft(); const th2=document.querySelector('.thumbs'); if(th2) th2.scrollLeft=sl; } break;
+    case 'model': S.model=v; S.ov = v==='photo'?{x:50,y:42,w:46}:{x:50,y:44.7,w:52}; soft(); break;
+    case 'selfie': $('#selfie').click(); break;
+    case 'upload': $('#photo').click(); break;
+    case 'hometry-add': startBooking('hometry',{frames:[S.pid]}); break;
+    case 'startbk': startBooking(v); break;
+    case 'bkset': { const k=v.slice(0,v.indexOf(':')); let val=v.slice(v.indexOf(':')+1);
+      if(k==='di'){ S.bk.di=+val; S.bk.slot=null; } else if(k==='remind'||k==='yearly'){ S.bk[k]=val==='1'; }
+      else { S.bk[k]=val; }
+      soft(); break; }
+    case 'bkframe': { const fr=S.bk.frames; const i=fr.indexOf(v); if(i>=0) fr.splice(i,1); else if(fr.length<5) fr.push(v); else toast('You can pick up to 5 frames'); soft(); break; }
+    case 'next': if(stepOk()){ S.bk.i++; render(true); } break;
+    case 'confirm': confirmBooking(); S.hist=[]; S.screen='bkdone'; render(true); break;
+    case 'qr': { const [mi,act,val]=v.split('|'); const m=S.msgs[+mi]; if(m&&m.quick){ const q=m.quick.find(x=>x[1]===act&&String(x[2])===val); m.quick=[]; S.msgs.push({from:'me', text:q?q[0]:act, when:nowLabel()}); } doQuick(act,val); break; }
+    case 'track': S.trackId=v; go('track'); break;
+    case 'advance': { const o=S.orders.find(x=>x.id===v); if(o){ advance(o); soft(); toast('Saathi sent an update'); } break; }
+    case 'ful': { const [oid,val]=v.split('|'); setFulfilment(oid,val); soft(); break; }
+    case 'visitdone': { const b=S.bookings.find(x=>x.id===v); if(b){ followUp(b); soft(); toast('Saathi sent a follow-up'); } break; }
+    case 'resched-bk': doQuick('resched', v); break;
+    case 'cancel': { const b=S.bookings.find(x=>x.id===v); if(b){ b.status='cancelled'; agent(`Your ${SERVICES[b.svc].title.toLowerCase()} on ${fmtDate(new Date(b.date))} is cancelled. Want to book another time?`, [['Book again','book',b.svc]]); save(); soft(); toast('Booking cancelled'); } break; }
+    case 'rm': S.cart.splice(+v,1); save(); soft(); break;
+    case 'co': { const [g,id]=v.split(':'); if(g==='pickup'){ S.co.del='store'; S.co.store=id; } else S.co[g]=id; soft(); break; }
+    case 'place': placeOrder([...S.cart], S.co); S.cart=[]; save(); S.hist=[]; S.screen='ordered'; render(true); break;
+    case 'demo': demo(v); break;
+    case 'reset': try{localStorage.removeItem(KEY);}catch(_){} S.cart=[]; S.bookings=[]; S.hist=[]; S.screen='home'; render(true); toast('Demo data cleared'); break;
+  }
+});
+function demo(v){
+  S.hist=[];
+  if(v==='tryon'){ S.tf='f3'; S.model='oval'; S.ov={x:50,y:44.7,w:52}; S.screen='tryon'; render(true); return; }
+  if(v==='agent'){
+    if(!S.orders.length){ const o=placeOrder([{fid:'f3',color:'#B8502E',lens:'blue'}], {rx:'upload',del:'store',store:'s1'}); advance(o); advance(o); }
+    if(!S.bookings.some(b=>b.status==='upcoming')){ S.bk={svc:'checkup', i:3, who:'papa', mode:'store', store:'s1', address:DEFAULT_ADDR, reason:null, doctor:null, frames:[], purpose:null, di:1, slot:'11:30 am', remind:true, yearly:true}; confirmBooking(); }
+    S.screen='inbox'; render(true); return;
+  }
+  if(v==='shop'){ if(!S.cart.length){ S.cart.push({fid:'f1',color:byId('f1').color,lens:'blue'}); save(); } S.screen='cart'; render(true); return; }
+  S.screen='home'; startBooking(v);
+}
+
+render(true);
+})();
+</script>
+
+</body>
+</html>
